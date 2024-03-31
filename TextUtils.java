@@ -1,3 +1,4 @@
+package me.intvk.ispleef.util;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.intvk.ispleef.Main;
@@ -16,6 +17,7 @@ import java.time.Duration;
 public class TextUtils {
     private final Main plugin = Main.getInstance();
 
+    // Replace placeholders in a message with values specific to a player
     public static String replacePlaceholders(Player player, String message) {
         if (player == null || message == null) {
             return null;
@@ -24,6 +26,7 @@ public class TextUtils {
         return PlaceholderAPI.setPlaceholders(player, message);
     }
 
+    // Get messages for a player based on a specific key
     public void getMessages(Player player, String key) {
         plugin.getDatabaseManager().getLanguageOperation().getPlayerLanguageAsync(player.getUniqueId(), language -> {
             if (language == null) {
@@ -33,15 +36,16 @@ public class TextUtils {
 
             FileConfiguration config = plugin.getMessageReader().readMessageFile(language + ".yml");
             if (config == null) {
-                return; // Обработка ошибки, если файл сообщений не найден
+                return; // Handle error if message file not found
             }
 
             ConfigurationSection messageSection = config.getConfigurationSection(key);
             if (messageSection == null) {
                 plugin.getLogger().warning("No message section found for key '" + key + "' in player's messages file.");
-                return; // Обработка ошибки, если раздел сообщений не найден
+                return; // Handle error if message section not found
             }
 
+            // Send messages with specified options
             sendMessageWithOptions(player,
                     messageSection.getString("chat"),
                     messageSection.getString("sound"),
@@ -54,6 +58,7 @@ public class TextUtils {
         });
     }
 
+    // Send messages with specified options
     public static void sendMessageWithOptions(Player player, String chatMessage, String sound, String title, String subtitle, int fadeIn, int stay, int fadeOut, String actionbarMessage) {
         if (chatMessage != null) {
             sendMessage(player, chatMessage);
@@ -72,6 +77,7 @@ public class TextUtils {
         }
     }
 
+    // Send a message to a player
     public static void sendMessage(Player player, String message) {
         String processedMessage = replacePlaceholders(player, message);
         if (processedMessage != null) {
@@ -79,6 +85,7 @@ public class TextUtils {
         }
     }
 
+    // Send a title to a player
     public static void sendTitle(final @NonNull Audience player, String title, String subTitle, int fadeIn, int stay, int fadeOut) {
         fadeIn *= 50;
         stay *= 50;
@@ -93,6 +100,7 @@ public class TextUtils {
         player.showTitle(showTitle);
     }
 
+    // Play a sound for a player
     public static void playSound(final Player player, String sound) {
         String processedSound = replacePlaceholders(player, sound);
         if (processedSound != null) {
@@ -102,6 +110,7 @@ public class TextUtils {
         }
     }
 
+    // Send an action bar message to a player
     public static void sendActionBar(final Player player, String actionBar) {
         String processedActionBar = replacePlaceholders(player, actionBar);
         if (processedActionBar != null) {
